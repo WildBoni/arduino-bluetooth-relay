@@ -6,7 +6,6 @@ int ledPin = 5;
 int relayPin = 7;
 
 String message;
-volatile byte relayState = LOW;
 
 SoftwareSerial bluetooth(rxPin, txPin);
 
@@ -24,23 +23,25 @@ void loop()
 {
   if(bluetooth.available()){
     message+=char(bluetooth.read());
-    delay(300);
+    Serial.println(message);
+    delay(100);
   }
   if(!bluetooth.available()){
     //bluetooth.write("response from arduino");
+    delay(100);
     if(message!=""){
       if(message == "H"){
         digitalWrite(ledPin, HIGH);
         digitalWrite(relayPin, LOW);
+        bluetooth.write("H");
         Serial.println("Led On");
-        delay(2000);
         message = "";
       }
       else if(message == "L"){
         digitalWrite(ledPin, LOW);
         digitalWrite(relayPin, HIGH);
+        bluetooth.write("L");
         Serial.println("Led OFF");
-        delay(2000);
         message = "";
       }
     }
